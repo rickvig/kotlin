@@ -181,7 +181,6 @@ object TopDownAnalyzerFacadeForJVM {
 
             // Scope for the dependency module contains everything except files present in the scope for the source module
             val dependencyScope = GlobalSearchScope.notScope(sourceScope)
-
             val dependenciesContainer = createContainerForLazyResolveWithJava(
                 jvmPlatform,
                 dependenciesContext, trace, DeclarationProviderFactory.EMPTY, dependencyScope, moduleClassResolver,
@@ -189,7 +188,8 @@ object TopDownAnalyzerFacadeForJVM {
                 packagePartProvider(dependencyScope), languageVersionSettings,
                 useBuiltInsProvider = true,
                 configureJavaClassFinder = configureJavaClassFinder,
-                implicitsResolutionFilter = implicitsResolutionFilter
+                implicitsResolutionFilter = implicitsResolutionFilter,
+                disableUltraLightClasses = configuration.getBoolean(CommonConfigurationKeys.DISABLE_UL)
             )
 
             moduleClassResolver.compiledCodeResolver = dependenciesContainer.get()
@@ -224,7 +224,8 @@ object TopDownAnalyzerFacadeForJVM {
             useBuiltInsProvider = true,
             configureJavaClassFinder = configureJavaClassFinder,
             javaClassTracker = configuration[JVMConfigurationKeys.JAVA_CLASSES_TRACKER],
-            implicitsResolutionFilter = implicitsResolutionFilter
+            implicitsResolutionFilter = implicitsResolutionFilter,
+            disableUltraLightClasses = configuration.getBoolean(CommonConfigurationKeys.DISABLE_UL)
         ).apply {
             initJvmBuiltInsForTopDownAnalysis()
             (partProvider as? IncrementalPackagePartProvider)?.deserializationConfiguration = get()

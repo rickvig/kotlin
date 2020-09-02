@@ -26,17 +26,21 @@ class CliTraceHolder : CodeAnalyzerInitializer {
         private set
     var languageVersionSettings: LanguageVersionSettings by Delegates.notNull()
         private set
+    var disableUltraLightClasses: Boolean by Delegates.notNull()
+        private set
 
 
     override fun initialize(
         trace: BindingTrace,
         module: ModuleDescriptor,
         codeAnalyzer: KotlinCodeAnalyzer,
-        languageVersionSettings: LanguageVersionSettings
+        languageVersionSettings: LanguageVersionSettings,
+        disableUltraLightClasses: Boolean
     ) {
         this.bindingContext = trace.bindingContext
         this.module = module
         this.languageVersionSettings = languageVersionSettings
+        this.disableUltraLightClasses = disableUltraLightClasses
 
         if (trace !is CliBindingTrace) {
             throw IllegalArgumentException("Shared trace is expected to be subclass of ${CliBindingTrace::class.java.simpleName} class")

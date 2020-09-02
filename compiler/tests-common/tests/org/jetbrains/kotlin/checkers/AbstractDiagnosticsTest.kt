@@ -479,7 +479,8 @@ abstract class AbstractDiagnosticsTest : BaseDiagnosticsTest() {
             ExpectActualTracker.DoNothing,
             environment.createPackagePartProvider(moduleContentScope),
             languageVersionSettings,
-            useBuiltInsProvider = true
+            useBuiltInsProvider = true,
+            disableUltraLightClasses = environment.configuration.getBoolean(CommonConfigurationKeys.DISABLE_UL)
         )
 
         container.initJvmBuiltInsForTopDownAnalysis()

@@ -45,13 +45,20 @@ abstract class AbstractJavaClassFinder : JavaClassFinder {
     }
 
     @PostConstruct
-    open fun initialize(trace: BindingTrace, codeAnalyzer: KotlinCodeAnalyzer, languageVersionSettings: LanguageVersionSettings) {
-        CodeAnalyzerInitializer.getInstance(project).initialize(trace, codeAnalyzer.moduleDescriptor, codeAnalyzer, languageVersionSettings)
+    open fun initialize(
+        trace: BindingTrace,
+        codeAnalyzer: KotlinCodeAnalyzer,
+        languageVersionSettings: LanguageVersionSettings,
+        disableUltraLightClasses: Boolean
+    ) {
+        CodeAnalyzerInitializer.getInstance(project)
+            .initialize(trace, codeAnalyzer.moduleDescriptor, codeAnalyzer, languageVersionSettings, disableUltraLightClasses)
     }
 
     inner class FilterOutKotlinSourceFilesScope(baseScope: GlobalSearchScope) : DelegatingGlobalSearchScope(baseScope) {
 
-        override fun contains(file: VirtualFile) = myBaseScope.contains(file) && (file.isDirectory || file.fileType !== KotlinFileType.INSTANCE)
+        override fun contains(file: VirtualFile) =
+            myBaseScope.contains(file) && (file.isDirectory || file.fileType !== KotlinFileType.INSTANCE)
 
         val base: GlobalSearchScope = myBaseScope
 

@@ -68,6 +68,7 @@ fun createContainerForLazyResolveWithJava(
     configureJavaClassFinder: (StorageComponentContainer.() -> Unit)? = null,
     javaClassTracker: JavaClassesTracker? = null,
     implicitsResolutionFilter: ImplicitsExtensionsResolutionFilter? = null,
+    disableUltraLightClasses: Boolean
 ): StorageComponentContainer = createContainer("LazyResolveWithJava", JvmPlatformAnalyzerServices) {
     configureModule(moduleContext, jvmPlatform, JvmPlatformAnalyzerServices, bindingTrace, languageVersionSettings)
 
@@ -89,11 +90,16 @@ fun createContainerForLazyResolveWithJava(
     targetEnvironment.configure(this)
 
 }.apply {
-    initializeJavaSpecificComponents(bindingTrace)
+    initializeJavaSpecificComponents(bindingTrace, disableUltraLightClasses)
 }
 
-fun StorageComponentContainer.initializeJavaSpecificComponents(bindingTrace: BindingTrace) {
-    get<AbstractJavaClassFinder>().initialize(bindingTrace, get<KotlinCodeAnalyzer>(), get<LanguageVersionSettings>())
+fun StorageComponentContainer.initializeJavaSpecificComponents(bindingTrace: BindingTrace, disableUltraLightClasses: Boolean) {
+    get<AbstractJavaClassFinder>().initialize(
+        trace = bindingTrace,
+        codeAnalyzer = get<KotlinCodeAnalyzer>(),
+        languageVersionSettings = get<LanguageVersionSettings>(),
+        disableUltraLightClasses = disableUltraLightClasses
+    )
 }
 
 fun StorageComponentContainer.configureJavaSpecificComponents(

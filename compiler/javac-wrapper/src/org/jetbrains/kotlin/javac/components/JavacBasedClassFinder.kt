@@ -28,9 +28,14 @@ class JavacBasedClassFinder : AbstractJavaClassFinder() {
 
     private lateinit var javac: JavacWrapper
 
-    override fun initialize(trace: BindingTrace, codeAnalyzer: KotlinCodeAnalyzer, languageVersionSettings: LanguageVersionSettings) {
+    override fun initialize(
+        trace: BindingTrace,
+        codeAnalyzer: KotlinCodeAnalyzer,
+        languageVersionSettings: LanguageVersionSettings,
+        disableUltraLightClasses: Boolean
+    ) {
         javac = JavacWrapper.getInstance(project)
-        super.initialize(trace, codeAnalyzer, languageVersionSettings)
+        super.initialize(trace, codeAnalyzer, languageVersionSettings, disableUltraLightClasses)
     }
 
     override fun findClass(request: JavaClassFinder.Request) =

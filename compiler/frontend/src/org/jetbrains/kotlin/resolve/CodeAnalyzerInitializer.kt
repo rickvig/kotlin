@@ -27,7 +27,8 @@ interface CodeAnalyzerInitializer {
         trace: BindingTrace,
         module: ModuleDescriptor,
         codeAnalyzer: KotlinCodeAnalyzer,
-        languageVersionSettings: LanguageVersionSettings
+        languageVersionSettings: LanguageVersionSettings,
+        disableUltraLightClasses: Boolean
     )
 
     fun createTrace(): BindingTrace
@@ -43,7 +44,8 @@ class DummyCodeAnalyzerInitializer : CodeAnalyzerInitializer {
         trace: BindingTrace,
         module: ModuleDescriptor,
         codeAnalyzer: KotlinCodeAnalyzer,
-        languageVersionSettings: LanguageVersionSettings
+        languageVersionSettings: LanguageVersionSettings,
+        disableUltraLightClasses: Boolean
     ) {
         // Do nothing
     }

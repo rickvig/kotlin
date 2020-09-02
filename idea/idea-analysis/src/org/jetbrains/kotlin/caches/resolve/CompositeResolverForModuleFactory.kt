@@ -168,7 +168,7 @@ class CompositeResolverForModuleFactory(
         metadataPartProvider: MetadataPartProvider,
         // Guaranteed to be non-null for modules with JVM
         moduleClassResolver: ModuleClassResolver?,
-        packagePartProvider: PackagePartProvider?
+        packagePartProvider: PackagePartProvider?,
     ): StorageComponentContainer = composeContainer("CompositePlatform") {
         // Shared by all PlatformConfigurators
         configureDefaultCheckers()
@@ -205,7 +205,7 @@ class CompositeResolverForModuleFactory(
         IdeaEnvironment.configure(this)
     }.apply {
         if (targetPlatform.has<JvmPlatform>()) {
-            initializeJavaSpecificComponents(trace)
+            initializeJavaSpecificComponents(trace, disableUltraLightClasses = false) //CODEREVIEW ASK HOW TO GET THIS FLAG HERE?
         }
     }
 }

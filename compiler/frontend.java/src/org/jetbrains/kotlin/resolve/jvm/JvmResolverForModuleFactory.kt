@@ -108,7 +108,8 @@ class JvmResolverForModuleFactory(
             ExpectActualTracker.DoNothing,
             packagePartProvider,
             languageVersionSettings,
-            useBuiltInsProvider = false // TODO: load built-ins from module dependencies in IDE
+            useBuiltInsProvider = false, // TODO: load built-ins from module dependencies in IDE
+            disableUltraLightClasses = false // CODEREVIEW ASK: How correctly set this flag here????!
         )
 
         val resolveSession = container.get<ResolveSession>()
