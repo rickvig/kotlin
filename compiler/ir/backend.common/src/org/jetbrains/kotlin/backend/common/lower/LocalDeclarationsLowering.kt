@@ -249,7 +249,7 @@ class LocalDeclarationsLowering(
                 localFunctionContext.declaration.body?.acceptVoid(commonSymbolRemapper)
                 localFunctionContext.declaration.valueParameters.forEach { v -> v.defaultValue?.acceptVoid(commonSymbolRemapper) }
             }
-            for (localFunctionContext in localFunctions.values)  {
+            for (localFunctionContext in localFunctions.values) {
                 localFunctionContext.transformedDeclaration.apply {
                     val extendedRemapper = SymbolRemapperWithTypeParameters(
                         localFunctionContext.capturedTypeParameterToTypeParameter,
@@ -930,57 +930,20 @@ class LocalDeclarationsLowering(
                             generateSequence(container) { it.parent as? IrDeclaration }.any { it is IrFunction && it.isInline }
             })
         }
-
-        private inner class SymbolRemapperWithTypeParameters(
-            typeParametersInitial: Map<IrTypeParameter, IrTypeParameter>,
-            private val delegate: DeepCopySymbolRemapper,
-        ) : SymbolRemapper {
-
-            private val extendedTypeParameters = typeParametersInitial.mapKeys { it.key.symbol }
-
-            override fun getReferencedClassifier(symbol: IrClassifierSymbol): IrClassifierSymbol =
-                if (symbol is IrTypeParameterSymbol)
-                    extendedTypeParameters[symbol]?.symbol ?: delegate.getReferencedClassifier(symbol)
-                else delegate.getReferencedClassifier(symbol)
-
-            // The rest of the SymbolRemapper methods go to the delegate
-            override fun getDeclaredClass(symbol: IrClassSymbol): IrClassSymbol = delegate.getDeclaredClass(symbol)
-            override fun getDeclaredFunction(symbol: IrSimpleFunctionSymbol): IrSimpleFunctionSymbol = delegate.getDeclaredFunction(symbol)
-            override fun getDeclaredProperty(symbol: IrPropertySymbol): IrPropertySymbol = delegate.getDeclaredProperty(symbol)
-            override fun getDeclaredField(symbol: IrFieldSymbol): IrFieldSymbol = delegate.getDeclaredField(symbol)
-            override fun getDeclaredFile(symbol: IrFileSymbol): IrFileSymbol = delegate.getDeclaredFile(symbol)
-            override fun getDeclaredConstructor(symbol: IrConstructorSymbol): IrConstructorSymbol = delegate.getDeclaredConstructor(symbol)
-            override fun getDeclaredEnumEntry(symbol: IrEnumEntrySymbol): IrEnumEntrySymbol = delegate.getDeclaredEnumEntry(symbol)
-            override fun getDeclaredExternalPackageFragment(symbol: IrExternalPackageFragmentSymbol): IrExternalPackageFragmentSymbol =
-                delegate.getDeclaredExternalPackageFragment(symbol)
-
-            override fun getDeclaredVariable(symbol: IrVariableSymbol): IrVariableSymbol = delegate.getDeclaredVariable(symbol)
-            override fun getDeclaredLocalDelegatedProperty(symbol: IrLocalDelegatedPropertySymbol): IrLocalDelegatedPropertySymbol =
-                delegate.getDeclaredLocalDelegatedProperty(symbol)
-            override fun getDeclaredTypeParameter(symbol: IrTypeParameterSymbol): IrTypeParameterSymbol =
-                delegate.getDeclaredTypeParameter(symbol)
-            override fun getDeclaredValueParameter(symbol: IrValueParameterSymbol): IrValueParameterSymbol =
-                delegate.getDeclaredValueParameter(symbol)
-            override fun getDeclaredTypeAlias(symbol: IrTypeAliasSymbol): IrTypeAliasSymbol = delegate.getDeclaredTypeAlias(symbol)
-            override fun getReferencedClass(symbol: IrClassSymbol): IrClassSymbol = delegate.getReferencedClass(symbol)
-            override fun getReferencedClassOrNull(symbol: IrClassSymbol?): IrClassSymbol? = delegate.getReferencedClassOrNull(symbol)
-            override fun getReferencedEnumEntry(symbol: IrEnumEntrySymbol): IrEnumEntrySymbol = delegate.getReferencedEnumEntry(symbol)
-            override fun getReferencedVariable(symbol: IrVariableSymbol): IrVariableSymbol = delegate.getReferencedVariable(symbol)
-            override fun getReferencedLocalDelegatedProperty(symbol: IrLocalDelegatedPropertySymbol): IrLocalDelegatedPropertySymbol =
-                delegate.getReferencedLocalDelegatedProperty(symbol)
-            override fun getReferencedField(symbol: IrFieldSymbol): IrFieldSymbol = delegate.getReferencedField(symbol)
-            override fun getReferencedConstructor(symbol: IrConstructorSymbol): IrConstructorSymbol =
-                delegate.getReferencedConstructor(symbol)
-            override fun getReferencedValue(symbol: IrValueSymbol): IrValueSymbol = delegate.getReferencedValue(symbol)
-            override fun getReferencedFunction(symbol: IrFunctionSymbol): IrFunctionSymbol = delegate.getReferencedFunction(symbol)
-            override fun getReferencedProperty(symbol: IrPropertySymbol): IrPropertySymbol = delegate.getReferencedProperty(symbol)
-            override fun getReferencedSimpleFunction(symbol: IrSimpleFunctionSymbol): IrSimpleFunctionSymbol =
-                delegate.getReferencedSimpleFunction(symbol)
-            override fun getReferencedReturnableBlock(symbol: IrReturnableBlockSymbol): IrReturnableBlockSymbol =
-                delegate.getReferencedReturnableBlock(symbol)
-            override fun getReferencedTypeAlias(symbol: IrTypeAliasSymbol): IrTypeAliasSymbol = delegate.getReferencedTypeAlias(symbol)
-        }
     }
+}
+
+private class SymbolRemapperWithTypeParameters(
+    typeParametersInitial: Map<IrTypeParameter, IrTypeParameter>,
+    private val delegate: DeepCopySymbolRemapper,
+) : SymbolRemapper by delegate {
+
+    private val extendedTypeParameters = typeParametersInitial.mapKeys { it.key.symbol }
+
+    override fun getReferencedClassifier(symbol: IrClassifierSymbol): IrClassifierSymbol =
+        if (symbol is IrTypeParameterSymbol)
+            extendedTypeParameters[symbol]?.symbol ?: delegate.getReferencedClassifier(symbol)
+        else delegate.getReferencedClassifier(symbol)
 }
 
 // Local inner classes capture anything through outer
