@@ -180,6 +180,9 @@ internal class KtUltraLightParameterForSource(
         return this
     }
 
+    override val givenAnnotations: List<KtLightAbstractAnnotation>?
+        get() = kotlinOrigin.annotationEntries.toLightAnnotations(this, null)
+
     override fun getText(): String? = kotlinOrigin.text
     override fun getTextRange(): TextRange = kotlinOrigin.textRange
     override fun getTextOffset(): Int = kotlinOrigin.textOffset
